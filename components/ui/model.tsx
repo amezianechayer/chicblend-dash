@@ -1,6 +1,12 @@
-import { metadata } from '../../app/layout';
-import { Dialog } from './dialog';
 "use client";
+import { 
+    Dialog, 
+    DialogContent, 
+    DialogDescription, 
+    DialogHeader, 
+    DialogTitle
+ } from '@/components/ui/dialog';
+
 
 interface ModelProps {
     titre: string;
@@ -26,7 +32,17 @@ export const Model: React.FC<ModelProps> = ({
     return (
         /* onChange recoit open boolean*/
         <Dialog open={etOuvert} onOpenChange={onChange}>
-
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{titre}</DialogTitle>
+                        <DialogDescription>
+                            {description}
+                        </DialogDescription>
+                </DialogHeader>
+                <div>
+                    {children}
+                </div>
+            </DialogContent>
         </Dialog>
-    )
-}
+    );
+}; 
