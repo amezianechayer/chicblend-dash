@@ -39,6 +39,8 @@ export const ModeleBoutique = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
           setLoading(true)
+          //test error dans toast.error
+          // throw new Error("a");
 
           const response = await axios.post('/api/boutiques', values);
           /* une petite icone d'animation et de verification*/
