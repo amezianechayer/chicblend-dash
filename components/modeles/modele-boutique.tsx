@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 import { utiliserBoutiqueModel } from "@/brancher/util-model-boutique";
 import { Model } from "@/components/ui/model";
@@ -16,6 +17,7 @@ import { Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
 
 
 const formSchema = z.object({
@@ -39,9 +41,10 @@ export const ModeleBoutique = () => {
           setLoading(true)
 
           const response = await axios.post('/api/boutiques', values);
-          console.log(response.data);
+          /* une petite icone d'animation et de verification*/
+          toast.success("Boutique Créee.");
         } catch(error) {
-          console.log(error);
+          toast.error("Quelque chose s'est mal passé.");  
         } finally {
           setLoading(false);
         }

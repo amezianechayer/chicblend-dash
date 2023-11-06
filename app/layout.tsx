@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { ModelFournisseur } from '@/fournisseur/model-fournisseur'
 
 import './globals.css'
+import { ToasterFournisseur } from '@/fournisseur/toast-fournisseur'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <body className={inter.className}>
+        <ToasterFournisseur />
         <ModelFournisseur/>
         {children}
         </body>
