@@ -5,7 +5,7 @@ import { Model } from "@/components/ui/model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +25,7 @@ export const ModeleBoutique = () => {
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values)
+        console.log(values);
         // TODO: Creer la boutique
     }
     return (
@@ -49,6 +49,7 @@ export const ModeleBoutique = () => {
                                 <FormControl>
                                     <Input placeholder="Chic-Blend" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )} 
                         />
