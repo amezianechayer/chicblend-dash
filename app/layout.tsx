@@ -1,10 +1,8 @@
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
-
-import { ModelFournisseur } from '@/fournisseur/model-fournisseur'
-
 import './globals.css'
-import { ToasterFournisseur } from '@/fournisseur/toast-fournisseur'
+import { ModalProvider } from '@/providers/model-provider'
+import { ToasterProvider } from '@/providers/toast-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,13 +16,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  
   return (
     <ClerkProvider>
     <html lang="en">
       <body className={inter.className}>
-        <ToasterFournisseur />
-        <ModelFournisseur/>
+        <ToasterProvider />
+        <ModalProvider/>
         {children}
         </body>
     </html>

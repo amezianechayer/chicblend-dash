@@ -19,17 +19,17 @@ export async function POST(
             return new NextResponse("Le Nom est requit", { status: 400 });
         }
 
-        const boutique = await prismadb.store.create({
+        const store = await prismadb.store.create({
             data: {
                 name,
                 userId,
             }
         });
 
-        return NextResponse.json(boutique)
+        return NextResponse.json(store)
 
     } catch (error) {
-        console.log('[BOUTIQUES_POST]', error);
+        console.log('[STORES_POST]', error);
         return new NextResponse("Internal error", {status: 500});
     }
 }
