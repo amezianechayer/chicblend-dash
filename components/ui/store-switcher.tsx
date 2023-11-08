@@ -1,109 +1,110 @@
-"use client";
+"use client"
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useStoreModal } from "@/hooks/use-store-modal";
-import { Store } from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, PlusCircle, Store as StoreIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList, CommandSeparator } from "@/components/ui/command";
-import { CommandItem } from "cmdk";
+import * as React from "react"
+import { Check, ChevronsUpDown, PlusCircle, Store } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { useStoreModal } from "@/hooks/use-store-modal"
+import { useParams, useRouter } from "next/navigation"
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+
 interface StoreSwitcherProps extends PopoverTriggerProps {
-    items: Store[];
+  items: Record<string, any>[];
+}
 
-};
+export default function StoreSwitcher({ className, items = [] }: StoreSwitcherProps) {
+  const storeModal = useStoreModal();
+  const params = useParams();
+  const router = useRouter();
 
-export default function StoreSwitcher ({
-    className,
-    items = [ ]
-}: StoreSwitcherProps) {
-    const storeModal = useStoreModal();
-    const params = useParams();
-    const router = useRouter();
+  const formattedItems = items.map((item) => ({
+    label: item.name,
+    value: item.id
+  }));
 
-    const formattedItems = items.map((item) => ({
-        label: item.name,
-        value: item.id
-    })); 
+  const currentStore = formattedItems.find((item) => item.value === params.storeId);
 
-    const currentStore = formattedItems.find((item) => item.value === params.storeId);
+  const [open, setOpen] = React.useState(false)
 
-    const [open, setOpen] = useState(false);
-    const onStoreSelect = (store: { value: string, label: string}) => {
-        setOpen(false)
-        router.push(`/${store.value}`);
-    }
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  role="combobox"
-                  aria-expanded={open}
-                  aria-label="Select a store"
-                  className={cn("w-[200px justify-between", className)}
+  const onStoreSelect = (store: { value: string, label: string }) => {
+    setOpen(false);
+    router.push(`/${store.value}`);
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          role="combobox"
+          aria-expanded={open}
+          aria-label="Select a store"
+          className={cn("w-[200px] justify-between", className)}
+        >
+          <Store className="mr-2 h-4 w-4" />
+          {currentStore?.label}
+          <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandList>
+            <CommandInput placeholder="Search store..." />
+            <CommandEmpty>Boutique non trouvée.</CommandEmpty>
+            <CommandGroup heading="Stores">
+              {formattedItems.map((store) => (
+                <CommandItem
+                  key={store.value}
+                  onSelect={() => onStoreSelect(store)}
+                  className="text-sm"
                 >
-                    <StoreIcon className="mr-2 h-4 w-4" />
-                    {currentStore?.label}
-                    <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50"/>
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
-                <Command>
-                    <CommandList>
-                        <CommandInput placeholder="Chercher une boutique..."/>
-                        <CommandEmpty>Pas de boutique trouvée.</CommandEmpty>
-                        <CommandGroup heading="Boutiques">
-                            {formattedItems.map((store) =>(
-                                <CommandItem
-                                    key={store.value}
-                                    onSelect={() => onStoreSelect(store)}
-                                    className="flex items-center"
-                                >
-                                    <StoreIcon className="mr-2 h-4 w-4"/>
-                                    {store.label}
-                                    <Check 
-                                        className={cn(
-                                            "ml-auto h-4 w-4",
-                                            currentStore?.value === store.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                    />
-                                </CommandItem>
-                            ))}
-
-                        </CommandGroup>
-                    </CommandList>
-                    <CommandSeparator />
-                    <CommandList>
-                        <CommandGroup>
-                            <CommandItem 
-                                onSelect={() => {
-                                    setOpen(false);
-                                    storeModal.onOpen();
-                                }}
-                            >
-                               <button
-                                className="flex items-center w-full p-2  "
-                                onClick={() => {
-                                // Action à effectuer lors du clic sur "Créer une Boutique"
-                                }}
-                             >
-                                <PlusCircle className="mr-2 h-5 w-4"  />
-                                   Créer une Boutique
-                                 </button>
-                            </CommandItem>
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-
-        </Popover>
-    );
+                  <Store className="mr-2 h-4 w-4" />
+                  {store.label}
+                  <Check
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      currentStore?.value === store.value
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+          <CommandSeparator />
+          <CommandList>
+            <CommandGroup>
+              <CommandItem
+                onSelect={() => {
+                  setOpen(false)
+                  storeModal.onOpen()
+                }}
+              >
+                <PlusCircle className="mr-2 h-5 w-5" />
+                Creer une Boutique
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
 };
