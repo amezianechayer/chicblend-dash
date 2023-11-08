@@ -11,6 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
+import { AlertModal } from "@/components/modals/alert-modal";
 
 
 interface SettingsFormProps {
@@ -27,6 +31,8 @@ type SettingsFormValues = z.infer<typeof formSchema>;
 export const SettingsForm: React.FC<SettingsFormProps> = ({
     initialData
 }) => {
+    const params = useParams();
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -36,11 +42,42 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
         defaultValues: initialData
     });
     const onSubmit = async (data: SettingsFormValues) => {
-        console.log(data);
+
+        try {
+            setLoading(true);
+            await axios.patch(`/api/stores/${params.storeId}`, data);
+            router.refresh();
+            toast.success("Boutique mise à jour.");
+        }catch (error) {
+            toast.error("Something went wrong.");
+        }finally {
+            setLoading(false);
+        }
     };
+
+    const onDelete = async () => {
+        try {
+        setLoading(true)
+        await axios.delete(`/api/stores/${params.storeId}`)
+        router.refresh();
+        router.push("/")
+        toast.success("Boutique Supprimée.")
+        }catch (error){
+            toast.error("Assurez-vous d'abord d'avoir supprimé tous les produits et catégories.")
+        }finally{
+            setLoading(false)
+            setOpen(false)
+        }
+    }
 
     return (
        <>
+        <AlertModal 
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          onConfirm={onDelete}
+          loading={loading}
+        />
         <div className="flex items-center justify-between">
             <Heading
               title="Settings"
