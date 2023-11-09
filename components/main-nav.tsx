@@ -11,7 +11,7 @@ export function MainNav({
     const pathname = usePathname();
     const params = useParams();
 
-    const routes = [
+    const routes = [ 
         {
             href: `/${params.storeId}`,
             label: 'Home',
